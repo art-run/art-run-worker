@@ -22,7 +22,7 @@ env:
   GAR_LOCATION: asia-northeast3
   GKE_CLUSTER: art-run-k8s-cluster
   GKE_ZONE: asia-northeast3-a	
-  DEPLOYMENT_NAME: dev-deploy
+  DEPLOYMENT_NAME: art-run-worker-deployment
   REPOSITORY: zwan2/art-run-worker
   IMAGE: static-site
 
