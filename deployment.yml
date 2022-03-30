@@ -3,13 +3,13 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    app: art-run
+    app: art-run-worker
   name: art-run-worker-deployment
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: art-run
+      app: art-run-worker
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -18,7 +18,7 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        app: art-run
+        app: art-run-worker
     spec:
       containers:
         - image: gcr.io/PROJECT_ID/REPOSITORY/IMAGE:TAG
