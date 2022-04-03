@@ -26,11 +26,13 @@ public class MapMatchingConsumer {
      */
     @KafkaListener(id="main-listener", topics = "match.req")
     public void receiveMapMatchRequest(String message) throws JsonProcessingException, ParseException {
-        log.info("Kafka to Server listen: " + message);
+        log.info("Kafka to Worker listen: " + message);
         RouteMatchDto routeMatchDto = new ObjectMapper().readValue(message, RouteMatchDto.class);
         RouteMatchDto matchedRouteMatchDto = snapToTargetRoute(routeMatchDto);
+        String matchedMessage = new ObjectMapper().writeValueAsString(matchedRouteMatchDto);
 
-        kafkaSender.send("match.res", new ObjectMapper().writeValueAsString(matchedRouteMatchDto));
+        kafkaSender.send("match.res", matchedMessage);
+        log.info("Worker to Kafka send: " + matchedMessage);
     }
 
     private RouteMatchDto snapToTargetRoute(RouteMatchDto routeMatchDto) throws ParseException {
