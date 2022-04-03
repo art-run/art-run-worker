@@ -11,11 +11,11 @@ spring:
     consumer:
       group-id: map-matching-group
 ---
-#spring:
-#  config:
-#    activate:
-#      on-profile: dev
-#  kafka:
-#    bootstrap-servers:
-#    consumer:
-#      group-id: map-matching-group
+spring:
+  config:
+    activate:
+      on-profile: dev
+  kafka:
+    bootstrap-servers: 10.80.10.5:9092
+    consumer:
+      group-id: map-matching-group
