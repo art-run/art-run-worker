@@ -5,6 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import org.locationtech.jts.operation.overlay.snap.LineStringSnapper;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -21,7 +25,7 @@ public class MapMatchingConsumer {
      * @param message
      */
     @KafkaListener(id="main-listener", topics = "match.req")
-    public void receiveMapMatchRequest(String message) throws JsonProcessingException {
+    public void receiveMapMatchRequest(String message) throws JsonProcessingException, ParseException {
         log.info("Kafka to Server listen: " + message);
         RouteMatchDto routeMatchDto = new ObjectMapper().readValue(message, RouteMatchDto.class);
         RouteMatchDto matchedRouteMatchDto = snapToTargetRoute(routeMatchDto);
@@ -29,8 +33,9 @@ public class MapMatchingConsumer {
         kafkaSender.send("match.res", new ObjectMapper().writeValueAsString(matchedRouteMatchDto));
     }
 
-    private RouteMatchDto snapToTargetRoute(RouteMatchDto routeMatchDto) {
-        LineStringSnapper lineStringSnapper = new LineStringSnapper(routeMatchDto.getTargetRoute(), 0.05);
+    private RouteMatchDto snapToTargetRoute(RouteMatchDto routeMatchDto) throws ParseException {
+        Geometry targetRoute = new WKTReader().read(routeMatchDto.getWktTargetRoute());
+        LineStringSnapper lineStringSnapper = new LineStringSnapper((LineString) targetRoute, 0.05);
         Coordinate coordinate = new Coordinate(routeMatchDto.getLng(), routeMatchDto.getLat());
 
         Coordinate snappedCoordinate = lineStringSnapper.snapTo(new Coordinate[]{coordinate})[0];
