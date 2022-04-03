@@ -17,16 +17,16 @@ public class MapMatchingConsumer {
     private final KafkaSender kafkaSender;
 
     /**
-     * match/req topic에서 메시지를 받아서 맵매칭하여 match/req topic으로 반환
+     * match.req topic에서 메시지를 받아서 맵매칭하여 match.req topic으로 반환
      * @param message
      */
-    @KafkaListener(id="main-listener", topics = "match/req")
+    @KafkaListener(id="main-listener", topics = "match.req")
     public void receiveMapMatchRequest(String message) throws JsonProcessingException {
         log.info("Kafka to Server listen: " + message);
         RouteMatchDto routeMatchDto = new ObjectMapper().readValue(message, RouteMatchDto.class);
         RouteMatchDto matchedRouteMatchDto = snapToTargetRoute(routeMatchDto);
 
-        kafkaSender.send("match/res", new ObjectMapper().writeValueAsString(matchedRouteMatchDto));
+        kafkaSender.send("match.res", new ObjectMapper().writeValueAsString(matchedRouteMatchDto));
     }
 
     private RouteMatchDto snapToTargetRoute(RouteMatchDto routeMatchDto) {
