@@ -13,7 +13,8 @@ public class KafkaSender {
     private final KafkaTemplate<String, String> kafkaTemplate;
 
     public void send(String topic, String data) {
-        log.info("Server to Kafka Send: {} to topic {}", data, topic);
+        log.info("Worker to Kafka send: " + data);
+
         kafkaTemplate.send(topic, data);
     }
 }
