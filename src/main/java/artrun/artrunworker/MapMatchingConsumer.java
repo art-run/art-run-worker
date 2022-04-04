@@ -32,17 +32,16 @@ public class MapMatchingConsumer {
         String matchedMessage = new ObjectMapper().writeValueAsString(matchedRouteMatchDto);
 
         kafkaSender.send("match.res", matchedMessage);
-        log.info("Worker to Kafka send: " + matchedMessage);
     }
 
     private RouteMatchDto snapToTargetRoute(RouteMatchDto routeMatchDto) throws ParseException {
         Geometry targetRoute = new WKTReader().read(routeMatchDto.getWktTargetRoute());
         LineStringSnapper lineStringSnapper = new LineStringSnapper((LineString) targetRoute, 0.05);
-        Coordinate coordinate = new Coordinate(routeMatchDto.getLng(), routeMatchDto.getLat());
-
+        Coordinate coordinate = new Coordinate(routeMatchDto.getLat(), routeMatchDto.getLng());
         Coordinate snappedCoordinate = lineStringSnapper.snapTo(new Coordinate[]{coordinate})[0];
-        routeMatchDto.setLng(snappedCoordinate.getX());
-        routeMatchDto.setLat(snappedCoordinate.getY());
+
+        routeMatchDto.setLat(snappedCoordinate.getX());
+        routeMatchDto.setLng(snappedCoordinate.getY());
 
         return routeMatchDto;
     }
