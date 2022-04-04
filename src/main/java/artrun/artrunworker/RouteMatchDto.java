@@ -12,6 +12,9 @@ public class RouteMatchDto {
     private Double lat;
     private Double lng;
 
+    public RouteMatchDto() {
+    }
+
     public RouteMatchDto(Long routeId, String wktTargetRoute, Double lat, Double lng) {
         this.routeId = routeId;
         this.wktTargetRoute = wktTargetRoute;
